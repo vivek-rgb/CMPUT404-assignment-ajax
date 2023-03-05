@@ -33,7 +33,7 @@
       var H = (canvas.height = window.innerHeight - 50);
       var world_url = window.location.href.replace(
         window.location.pathname,
-        "worlds/"
+        "/world"
       );
 
       function sendJSONXMLHTTPRequest(url, objects, callback) {
@@ -78,7 +78,7 @@
       function drawCircle(context, entity) {
         with (context) {
           beginPath();
-          lineWidth = 1;
+          lineWidth = 0.2;
           var x = entity["x"];
           var y = entity["y"];
           //moveTo(x,y);
@@ -170,7 +170,7 @@
 
       function addEntity(entity, data) {
         world[entity] = data;
-        drawNextFrame(); // (but should we?)
+        //drawNextFrame(); // (but should we?)
         //XXX: Send a XHTML Request that updates the entity you just  modified!
         let url = window.location.href.replace(
           window.location.pathname,
@@ -287,20 +287,44 @@
       // Add the application specific mouse listeners!
       //XXX: TODO Make these prettier!
       mouse.mousedowners.push(function (x, y, clicked, e) {
-        addEntityWithoutName({ x: x, y: y, colour: "blue" });
+        addEntityWithoutName({ x: x, y: y, colour: "white" });
       });
 
       mouse.mouseuppers.push(function (x, y, clicked, e) {
-        addEntityWithoutName({ x: x, y: y, colour: "red" });
+        addEntityWithoutName({ x: x, y: y, colour: "yellow" });
       });
 
+      //https://stackoverflow.com/a/1484514/19890792 , Anatoliy
+      function generateRandomColour() {
+        var letters = "0123456789ABCDEF";
+        var colour = "#";
+        for (var i = 0; i < 6; i++) {
+          colour += letters[Math.floor(Math.random() * 16)];
+        }
+        return colour;
+      }
       mouse.mousedraggers.push(function (x, y, clicked, e) {
-        addEntityWithoutName({ x: x, y: y, colour: "green", radius: 10 });
+        addEntityWithoutName({
+          x: x,
+          y: y,
+          colour: generateRandomColour(),
+          radius: 10,
+        });
       });
 
       function update() {
         //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
+        sendJSONXMLHTTPRequest(
+          window.location.href.replace(window.location.pathname, "/world"),
+
+          {},
+          function (data) {
+            world = data;
+          }
+        );
+
         drawFrame();
+        drawNextFrame();
       }
 
       // 30 frames per second
