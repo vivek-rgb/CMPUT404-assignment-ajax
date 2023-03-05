@@ -172,6 +172,13 @@
         world[entity] = data;
         drawNextFrame(); // (but should we?)
         //XXX: Send a XHTML Request that updates the entity you just  modified!
+        let url = window.location.href.replace(
+          window.location.pathname,
+          `/entity/${entity}`
+        );
+        sendJSONXMLHTTPRequest(url, data, function (data) {
+          console.log(data);
+        });
       }
 
       var counter = 0;
