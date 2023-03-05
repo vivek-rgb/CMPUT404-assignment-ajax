@@ -78,20 +78,30 @@
       function drawCircle(context, entity) {
         with (context) {
           beginPath();
-          lineWidth = 3;
+          lineWidth = 1;
           var x = entity["x"];
           var y = entity["y"];
           //moveTo(x,y);
           fillStyle = entity["colour"];
           strokeStyle = fillStyle;
-          arc(
+          arc(x, y, entity["radius"] ? entity["radius"] : 30, 0, 2.0 * Math.PI);
+
+          //https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
+          // create a radial gradient
+          const gradient = context.createRadialGradient(
             x,
             y,
-            entity["radius"] ? entity["radius"] : 50,
             0,
-            2.0 * Math.PI,
-            false
+            x,
+            y,
+            entity["radius"] ? entity["radius"] : 30
           );
+          gradient.addColorStop(0, "#fff");
+          gradient.addColorStop(0.5, entity["colour"]);
+          gradient.addColorStop(1, "#000");
+          context.fillStyle = gradient;
+
+          fill();
           stroke();
         }
       }
