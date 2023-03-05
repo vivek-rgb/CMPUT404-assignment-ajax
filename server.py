@@ -88,7 +88,7 @@ def update(entity):
             # Update the existing entity
             myWorld.update(entity, key, value)
             # Return the entity
-            return Response(json.dumps(myWorld.get(entity)),status=200, mimetype='application/json')
+        return Response(json.dumps(myWorld.get(entity)),status=200, mimetype='application/json')
 
     elif request.method == 'POST':
 
