@@ -79,21 +79,45 @@ def hello():
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface'''
+    entity_data = flask_post_json()
+
+
+    if request.method == 'PUT':
+        for key, value in entity_data.items():
+
+            # Update the existing entity
+            myWorld.update(entity, key, value)
+            # Return the entity
+            return Response(json.dumps(myWorld.get(entity)),status=200, mimetype='application/json')
+
+    elif request.method == 'POST':
+
+        # create a new entity
+        myWorld.set(entity, entity_data)
+        # Return the entity
+        return Response(json.dumps(myWorld.get(entity)),status=200, mimetype='application/json')
+
     return None
+
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
+    if request.method == "GET":
+        return Response(json.dumps(myWorld.world()),status=200, mimetype='application/json')
     return None
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return None
+    return Response(json.dumps(myWorld.get(entity)),status=200, mimetype='application/json')
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
+    if request.method == "POST":
+        myWorld.clear()
+        return Response(json.dumps(myWorld.world()),status=200, mimetype='application/json')
     return None
 
 if __name__ == "__main__":
